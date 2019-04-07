@@ -33,8 +33,8 @@ public class DataSourceConfig {
 
 
 
-    @Bean(name = "dataSource")
-    @Qualifier("dataSource")
+    @Bean(name = "primaryDataSource")
+    @Qualifier("primaryDataSource")
     @Primary
     @ConfigurationProperties(prefix="spring.datasource.primary")
     public DataSource primaryDataSource() {

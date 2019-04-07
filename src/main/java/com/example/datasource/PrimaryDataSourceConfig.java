@@ -1,11 +1,10 @@
 package com.example.datasource;
 
+import com.example.entity.SpringSessionBean;
 import com.example.entity.UserBean;
-import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -25,39 +24,38 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerFactory",
-        transactionManagerRef = "transactionManager"
+        entityManagerFactoryRef = "primaryEntityManagerFactory",
+        transactionManagerRef = "primaryTransactionManager"
 //        basePackageClasses = {UserRepository.class}
 )
-@EntityScan(basePackageClasses = {UserBean.class})
 //@formatter:on
 public class PrimaryDataSourceConfig {
     @Autowired
-    @Qualifier("dataSource")
+    @Qualifier("primaryDataSource")
     private DataSource dataSource;
 
     @Autowired
     private JpaProperties jpaProperties;
 
     @Primary
-    @Bean(name = "entityManager")
+    @Bean(name = "primaryEntityManager")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
         return entityManagerFactory(builder).getObject().createEntityManager();
     }
 
     @Primary
-    @Bean(name = "entityManagerFactory")
+    @Bean(name = "primaryEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(dataSource)
                 .properties(getVendorProperties())
-                .packages(UserBean.class)
+                .packages(SpringSessionBean.class)
                 .persistenceUnit("default")
                 .build();
     }
 
     @Primary
-    @Bean(name = "transactionManager")
+    @Bean(name = "primaryTransactionManager")
     public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
         return new JpaTransactionManager(entityManagerFactory(builder).getObject());
     }
