@@ -21,9 +21,6 @@ public class UserController {
 
     @RequestMapping("/rest/test")
     public Object test(@RequestParam(name = "userId") final Integer userId, HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        String userName = (String) session.getAttribute("userName");
-//        logger.info("Login userName:"+userName);
         UserBean userBean = userService.getUserById(userId).get();
         userBean.setUsername(null);
         return userBean;
