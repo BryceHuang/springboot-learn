@@ -9,4 +9,6 @@ public interface UserService {
     void addUser(UserBean user);
 
     Optional<UserBean> getUserById(Integer userId);
+
+    void deleteUser(Integer userId);
 }
